@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    // silence deprecation warnings for baseUrl pending migration to TS7
-    "ignoreDeprecations": "6.0",
     // add jest for types
     "types": ["jest", "node"],
     "module": "nodenext",
