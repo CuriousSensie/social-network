@@ -17,6 +17,7 @@ export class User {
     trim: true,
     lowercase: true,
     maxlength: 254,
+    unique: true,
   })
   email!: string;
 
@@ -27,6 +28,7 @@ export class User {
     minlength: 3,
     maxlength: 30,
     match: /^[a-z0-9._]+$/,
+    unique: true,
   })
   username!: string;
 
