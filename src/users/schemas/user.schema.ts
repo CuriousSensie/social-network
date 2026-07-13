@@ -57,7 +57,7 @@ export class User {
     trim: true,
     default: null,
   })
-  avatarUrl!: string | null;
+  avatarUrl!: string;
 
   @Prop({
     type: String,
@@ -79,11 +79,9 @@ export class User {
   emailVerified!: boolean;
 
   @Prop({
-    type: AccessStatus,
-    default: () => ({
-      type: AccessStatus.FREE,
-      expiresAt: null,
-    }),
+    type: String,
+    enum: AccessStatus,
+    default: AccessStatus.FREE,
   })
   accessStatus!: AccessStatus;
 
