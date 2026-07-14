@@ -13,8 +13,6 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto) {
-    console.log(loginDto);
-
     const findUserDto: FindUserDto = {};
 
     if (loginDto.emailOrUsername.includes('@')) {
@@ -23,11 +21,8 @@ export class AuthService {
       findUserDto.username = loginDto.emailOrUsername;
     }
 
-    console.log(findUserDto);
-
     const user = await this.usersService.findOne(findUserDto);
 
-    console.log(user);
     if (
       !user ||
       !(await bcrypt.compare(loginDto.password, user.passwordHash))
