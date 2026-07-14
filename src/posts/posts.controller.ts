@@ -9,22 +9,29 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdatePostStatusDto } from './dto/update-post-status.dto';
 import { QueryPostsDto } from './dto/query-post.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
 @Controller('posts')
+@UseGuards(JwtAuthGuard)
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   // CREATE POST: POST /posts
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @GetUser('userId') userId: string,
+  ) {
+    return this.postsService.create({ ...createPostDto, authorId: userId });
   }
 
   // GET ALL POSTS: GET /posts

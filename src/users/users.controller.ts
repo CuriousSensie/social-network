@@ -9,6 +9,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,6 +18,7 @@ import { FindUserDto } from './dto/find-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
 import { PaginatedResult } from 'src/common/interface/paginated-result.interface';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -30,6 +32,7 @@ export class UsersController {
   }
 
   // GET ALL USERS (PAGINATED): GET /users?page=1&limit=10&search=haz
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(
     @Query() queryUserDto: QueryUsersDto,
@@ -44,6 +47,7 @@ export class UsersController {
   }
 
   // GET SINGLE USER BY ID: GET /users/:id
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findById(@Param('id') id: string): Promise<User> {
     return await this.usersService.findById(id);
@@ -59,6 +63,7 @@ export class UsersController {
   }
 
   // DELETE USER DOCUMENT: DELETE /users/:id
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<User> {
     return await this.usersService.deletedUser(id);
