@@ -8,16 +8,27 @@ import { PaginatedResult } from 'src/common/interface/paginated-result.interface
 import { PostStatus } from './enums/post-status.enum';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdatePostStatusDto } from './dto/update-post-status.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async create(createPostDto: CreatePostDto): Promise<Post> {
     const newPost = new this.postModel(createPostDto);
-    return newPost.save();
+    const savedPost = await newPost.save();
+
+    const populatedPost = await savedPost.populate(
+      'authorId',
+      'username displayName',
+    );
+
+    this.eventEmitter.emit('post.created', populatedPost);
+
+    return populatedPost;
   }
 
   async findAll(queryPostsDto: QueryPostsDto): Promise<PaginatedResult<Post>> {
