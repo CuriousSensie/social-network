@@ -140,4 +140,29 @@ export class FollowsService {
       },
     };
   }
+
+  // Get the list of user IDs the current user follows
+  async getFollowingIds(userId: string): Promise<string[]> {
+    const followingsFilter: QueryFilter<FollowDocument> = {
+      followerId: userId as any,
+    };
+
+    const follows = await this.followModel
+      .find(followingsFilter)
+      .select('followingId')
+      .exec();
+    return follows.map((f) => f.followingId.toString());
+  }
+
+  async getFollowerIds(userId: string): Promise<string[]> {
+    const followersFilter: QueryFilter<FollowDocument> = {
+      followingId: userId as any,
+    };
+
+    const followers = await this.followModel
+      .find(followersFilter)
+      .select('followerId')
+      .exec();
+    return followers.map((f) => f.followerId.toString());
+  }
 }
