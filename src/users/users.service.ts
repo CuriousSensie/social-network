@@ -22,23 +22,19 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    try {
-      const user = await this.userModel
-        .findOne({
-          $or: [
-            { email: createUserDto.email },
-            { username: createUserDto.username },
-          ],
-        })
-        .exec();
-      if (user) {
-        throw new ConflictException('User already exists');
-      }
-      const createdUser = new this.userModel(createUserDto);
-      return createdUser.save();
-    } catch (error) {
-      throw error;
+    const user = await this.userModel
+      .findOne({
+        $or: [
+          { email: createUserDto.email },
+          { username: createUserDto.username },
+        ],
+      })
+      .exec();
+    if (user) {
+      throw new ConflictException('User already exists');
     }
+    const createdUser = new this.userModel(createUserDto);
+    return createdUser.save();
   }
 
   async findAll(queryUserDto: QueryUsersDto): Promise<PaginatedResult<User>> {
@@ -67,95 +63,75 @@ export class UsersService {
       filters.accessStatus = AccessStatus[accessStatus];
     }
 
-    try {
-      const [data, total] = await Promise.all([
-        this.userModel
-          .find(filters)
-          .skip(skip)
-          .limit(limit)
-          .sort({ createdAt: -1 })
-          .exec(),
-        this.userModel.countDocuments(filters).exec(),
-      ]);
+    const [data, total] = await Promise.all([
+      this.userModel
+        .find(filters)
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec(),
+      this.userModel.countDocuments(filters).exec(),
+    ]);
 
-      return {
-        data,
-        meta: {
-          totalItems: total,
-          itemCount: data.length,
-          itemsPerPage: limit,
-          totalPages: Math.ceil(total / limit),
-          currentPage: page,
-          hasNextPage: page * limit < total,
-          hasPreviousPage: page > 1,
-        },
-      };
-    } catch (error) {
-      throw error;
-    }
+    return {
+      data,
+      meta: {
+        totalItems: total,
+        itemCount: data.length,
+        itemsPerPage: limit,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+        hasNextPage: page * limit < total,
+        hasPreviousPage: page > 1,
+      },
+    };
   }
 
   async findOne(findUserDto: FindUserDto): Promise<User> {
     const { username, email } = findUserDto;
 
-    try {
-      const user = await this.userModel
-        .findOne({
-          $or: [{ username }, { email }],
-        })
-        .exec();
+    const user = await this.userModel
+      .findOne({
+        $or: [{ username }, { email }],
+      })
+      .exec();
 
-      if (!user) {
-        throw new NotFoundException(`User not found`);
-      }
-
-      return user;
-    } catch (error) {
-      throw error;
+    if (!user) {
+      throw new NotFoundException(`User not found`);
     }
+
+    return user;
   }
 
   async findById(id: string): Promise<User> {
-    try {
-      const user = await this.userModel.findById(id).exec();
+    const user = await this.userModel.findById(id).exec();
 
-      if (!user) {
-        throw new NotFoundException(`User with ID ${id} not found`);
-      }
-
-      return user;
-    } catch (error) {
-      throw error;
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
+
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    try {
-      const updatedUser = await this.userModel
-        .findByIdAndUpdate(id, updateUserDto, { new: true })
-        .exec();
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(id, updateUserDto, { new: true })
+      .exec();
 
-      if (!updatedUser) {
-        throw new NotFoundException(`User with ID ${id} not found`);
-      }
-
-      return updatedUser;
-    } catch (error) {
-      throw error;
+    if (!updatedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
+
+    return updatedUser;
   }
 
   async deletedUser(id: string): Promise<User> {
-    try {
-      const deletedUser = await this.userModel.findByIdAndDelete(id).exec();
+    const deletedUser = await this.userModel.findByIdAndDelete(id).exec();
 
-      if (!deletedUser) {
-        throw new NotFoundException(`User with ID ${id} not found`);
-      }
-
-      return deletedUser;
-    } catch (error) {
-      throw error;
+    if (!deletedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
+
+    return deletedUser;
   }
 }
