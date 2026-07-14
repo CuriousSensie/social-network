@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -14,6 +15,7 @@ import { AccessStatus } from './enums/access-status.enum';
 import { PaginatedResult } from 'src/common/interface/paginated-result.interface';
 import { FindUserDto } from './dto/find-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -30,9 +32,14 @@ export class UsersService {
         ],
       })
       .exec();
+
     if (user) {
       throw new ConflictException('User already exists');
     }
+
+    const hashedPassword = await bcrypt.hash(createUserDto.passwordHash, 10);
+    createUserDto.passwordHash = hashedPassword;
+
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();
   }
