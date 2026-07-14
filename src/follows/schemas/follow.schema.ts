@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 
-export type FollowDocument = Follow & Document;
+export type FollowDocument = HydratedDocument<Follow>;
 
 @Schema({ timestamps: true })
 export class Follow {
