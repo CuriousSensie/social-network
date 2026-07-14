@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { AccessStatus } from '../enums/access-status.enum';
 import { UserStatus } from '../enums/user-status.enum';
 import { UserRole } from '../enums/user-role.enum';
@@ -12,6 +12,8 @@ export type UserDocument = HydratedDocument<User>;
   collection: 'users',
 })
 export class User {
+  _id!: Types.ObjectId;
+
   @Prop({
     required: true,
     trim: true,

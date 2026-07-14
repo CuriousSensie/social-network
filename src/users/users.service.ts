@@ -101,6 +101,7 @@ export class UsersService {
       .findOne({
         $or: [{ username }, { email }],
       })
+      .select('+passwordHash') // force select passwordHash for auth
       .exec();
 
     if (!user) {
