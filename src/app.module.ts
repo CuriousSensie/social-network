@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { FeedModule } from './feed/feed.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PaymentsModule } from './payments/payments.module';
+import { ModerationModule } from './moderation/moderation.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { PaymentsModule } from './payments/payments.module';
     FeedModule,
     EventEmitterModule.forRoot(),
     PaymentsModule,
+    ModerationModule,
   ],
   controllers: [],
   providers: [],
