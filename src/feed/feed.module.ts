@@ -4,6 +4,7 @@ import { FeedController } from './feed.controller';
 import { Post, PostSchema } from 'src/posts/schemas/post.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FollowsModule } from 'src/follows/follows.module';
+import { PaymentsModule } from 'src/payments/payments.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FollowsModule } from 'src/follows/follows.module';
       },
     ]),
     FollowsModule,
+    PaymentsModule,
   ],
   providers: [FeedService],
   controllers: [FeedController],

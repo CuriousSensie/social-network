@@ -133,6 +133,21 @@ export class UsersService {
     return updatedUser;
   }
 
+  async updateAccessStatus(
+    id: string,
+    accessStatus: AccessStatus,
+  ): Promise<User> {
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(id, { accessStatus }, { new: true })
+      .exec();
+
+    if (!updatedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return updatedUser;
+  }
+
   async deletedUser(id: string): Promise<User> {
     const deletedUser = await this.userModel.findByIdAndDelete(id).exec();
 

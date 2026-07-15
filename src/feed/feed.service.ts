@@ -6,16 +6,20 @@ import { FollowsService } from '../follows/follows.service';
 import { PostStatus } from '../posts/enums/post-status.enum';
 import { QueryFeedDto } from './dto/query-feed.dto';
 import { PaginatedResult } from 'src/common/interface/paginated-result.interface';
+import { PaymentsService } from 'src/payments/payments.service';
 
 @Injectable()
 export class FeedService {
   constructor(
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     private followsService: FollowsService,
+    private paymentsService: PaymentsService,
   ) {}
 
   async getFeed(queryFeedDto: QueryFeedDto): Promise<PaginatedResult<Post>> {
     const { page, limit, skip, sortBy, sortOrder, userId } = queryFeedDto;
+
+    await this.paymentsService.requirePaidAccess(userId);
 
     const followingIds = await this.followsService.getFollowingIds(userId);
 
@@ -51,7 +55,7 @@ export class FeedService {
         .sort(sortConfig as any)
         .skip(skip)
         .limit(limit)
-        .populate('authorId', 'username isPremium')
+        .populate('authorId', 'username displayName accessStatus')
         .exec(),
       this.postModel.countDocuments(query).exec(),
     ]);
