@@ -1,0 +1,30 @@
+name: Heroku Deploy
+on: 
+  push:
+    branches:
+      - main 
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2 
+
+      - name: Install Heroku CLI
+        run: | 
+          curl https://cli-assets.heroku.com/install.sh | sh 
+      
+      - name: Deploy 
+        uses: akhileshns/heroku-deploy@v3.15.15
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
